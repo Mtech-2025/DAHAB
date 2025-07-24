@@ -1,5 +1,5 @@
 export const environment = {
-  api_url: 'http://104.248.35.179:8003/api/',
-  api_web_socket: '104.248.35.179:8003/',
+  api_url: 'https://api.dahab.mtechbh.com/',
+  api_web_socket: 'https://websocket.dahab.mtechbh.com/',
   production: true
 };

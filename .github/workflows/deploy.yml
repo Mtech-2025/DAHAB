@@ -10,30 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: 🧰 Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      - name: Build Angular app
+      - name: 🛠️ Build Angular app
         run: npm run build -- --configuration production --base-href /
 
-      - name: Copy build files to EC2
+      - name: 📤 Upload build files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: dist/dahab2/browser/**
-          target: /home/ec2-user/DAHAB/dist/dahab2/browser/
+          source: dist/dahab2/browser/*
+          target: /home/ec2-user/DAHAB/temp-deploy/
 
-      - name: Move files to nginx root and restart nginx
+      - name: 🚀 Move files to Nginx directory and restart server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -41,5 +41,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo rm -rf /usr/share/nginx/html/*
-            sudo cp -r /home/ec2-user/DAHAB/dist/dahab2/browser/* /usr/share/nginx/html/
+            sudo cp -r /home/ec2-user/DAHAB/temp-deploy/* /usr/share/nginx/html/
             sudo systemctl restart nginx
